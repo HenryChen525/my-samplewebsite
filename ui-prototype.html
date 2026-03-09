@@ -125,6 +125,9 @@
   <nav>
     <div class="section-label">主選單</div>
     <a class="active" onclick="show('dashboard')"><span class="icon">📊</span>儀表板</a>
+    <div class="section-label">商品管理</div>
+    <a onclick="show('products')"><span class="icon">🚪</span>產品管理</a>
+    <a onclick="show('discounts')"><span class="icon">🏷️</span>折扣設定</a>
     <div class="section-label">銷售</div>
     <a onclick="show('quotations')"><span class="icon">📋</span>報價單管理</a>
     <a onclick="show('sales')"><span class="icon">🛒</span>銷售訂單</a>
@@ -208,6 +211,176 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- ─────────────── 產品管理 -->
+    <div class="screen" id="screen-products">
+      <div class="tab-bar">
+        <div class="tab active" onclick="setTab(this,'products','list')">產品列表</div>
+        <div class="tab" onclick="setTab(this,'products','pricing')">定價配方</div>
+        <div class="tab" onclick="setTab(this,'products','bom')">製造 BOM</div>
+      </div>
+
+      <!-- 產品列表 -->
+      <div id="products-list">
+        <div class="toolbar">
+          <input type="text" placeholder="🔍 搜尋產品名稱、代碼…">
+          <button class="btn btn-primary" onclick="showModal('新增產品')">＋ 新增產品</button>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <table>
+              <thead><tr><th>產品代碼</th><th>品名</th><th>基本售價</th><th>定價零件數</th><th>BOM 原料數</th><th>操作</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><strong>FD-A-STD</strong></td><td>甲級防火門（標準型）</td><td>$28,000</td><td>5</td><td>8</td>
+                  <td>
+                    <button class="btn btn-outline btn-sm" onclick="selectProduct('甲級防火門（標準型）','FD-A-STD')">查看配方</button>
+                    <button class="btn btn-outline btn-sm" onclick="showModal('編輯產品')">編輯</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>FD-B-STD</strong></td><td>乙級防火門（標準型）</td><td>$18,500</td><td>5</td><td>7</td>
+                  <td>
+                    <button class="btn btn-outline btn-sm" onclick="selectProduct('乙級防火門（標準型）','FD-B-STD')">查看配方</button>
+                    <button class="btn btn-outline btn-sm" onclick="showModal('編輯產品')">編輯</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>FD-A-CUS</strong></td><td>甲級防火門（客製型）</td><td>$0</td><td>5</td><td>8</td>
+                  <td>
+                    <button class="btn btn-outline btn-sm" onclick="selectProduct('甲級防火門（客製型）','FD-A-CUS')">查看配方</button>
+                    <button class="btn btn-outline btn-sm" onclick="showModal('編輯產品')">編輯</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>FD-ROLL</strong></td><td>防火捲門（標準型）</td><td>$65,000</td><td>4</td><td>6</td>
+                  <td>
+                    <button class="btn btn-outline btn-sm" onclick="selectProduct('防火捲門（標準型）','FD-ROLL')">查看配方</button>
+                    <button class="btn btn-outline btn-sm" onclick="showModal('編輯產品')">編輯</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- 定價配方 -->
+      <div id="products-pricing" style="display:none">
+        <div class="alert alert-info" id="pricing-banner">請先在「產品列表」點擊「查看配方」選擇產品</div>
+        <div id="pricing-content" style="display:none">
+          <div class="card" style="margin-bottom:16px">
+            <div class="card-header">
+              <h3>定價零件組成 — <span id="pricing-product-name"></span></h3>
+              <button class="btn btn-primary btn-sm" onclick="showModal('新增定價零件')">＋ 新增零件</button>
+            </div>
+            <div class="card-body">
+              <table id="pricing-table">
+                <thead><tr><th>零件名稱</th><th>類別</th><th>每件用量</th><th>階梯定價</th><th>操作</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3>階梯定價詳情（pricing_parts → part_price_tiers）</h3></div>
+            <div class="card-body">
+              <table>
+                <thead><tr><th>零件</th><th>最低數量</th><th>單價（元）</th><th>操作</th></tr></thead>
+                <tbody>
+                  <tr><td>鋁合金門框</td><td>1</td><td>$3,200</td><td><button class="btn btn-outline btn-sm">編輯</button></td></tr>
+                  <tr><td>鋁合金門框</td><td>10</td><td>$2,900</td><td><button class="btn btn-outline btn-sm">編輯</button></td></tr>
+                  <tr><td>鋁合金門框</td><td>20</td><td>$2,600</td><td><button class="btn btn-outline btn-sm">編輯</button></td></tr>
+                  <tr><td>防火膨脹條</td><td>1</td><td>$450</td><td><button class="btn btn-outline btn-sm">編輯</button></td></tr>
+                  <tr><td>防火膨脹條</td><td>20</td><td>$380</td><td><button class="btn btn-outline btn-sm">編輯</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 製造 BOM -->
+      <div id="products-bom" style="display:none">
+        <div class="alert alert-info" id="bom-banner">請先在「產品列表」點擊「查看配方」選擇產品</div>
+        <div id="bom-content" style="display:none">
+          <div class="card">
+            <div class="card-header">
+              <h3>製造 BOM — <span id="bom-product-name"></span></h3>
+              <button class="btn btn-primary btn-sm" onclick="showModal('新增 BOM 原料')">＋ 新增原料</button>
+            </div>
+            <div class="card-body">
+              <table>
+                <thead><tr><th>原料名稱</th><th>單位</th><th>計算方式</th><th>用量係數</th><th>說明</th><th>操作</th></tr></thead>
+                <tbody id="bom-table">
+                  <tr><td>鋁合金門框 A型</td><td>支</td><td><span class="badge badge-blue">fixed</span></td><td>2.0000</td><td>每樘固定 2 支</td><td><button class="btn btn-outline btn-sm">編輯</button></td></tr>
+                  <tr><td>防火膨脹條 3mm</td><td>捲</td><td><span class="badge badge-green">per_perimeter</span></td><td>0.0030</td><td>依門框周長計算</td><td><button class="btn btn-outline btn-sm">編輯</button></td></tr>
+                  <tr><td>鉸鏈組 標準型</td><td>組</td><td><span class="badge badge-blue">fixed</span></td><td>3.0000</td><td>每樘 3 組</td><td><button class="btn btn-outline btn-sm">編輯</button></td></tr>
+                  <tr><td>防火板材 A級</td><td>片</td><td><span class="badge badge-yellow">per_area</span></td><td>0.0005</td><td>依門扇面積計算</td><td><button class="btn btn-outline btn-sm">編輯</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────── 折扣設定 -->
+    <div class="screen" id="screen-discounts">
+      <div class="alert alert-info">📐 折扣依原料累積用量計算。報價時系統將各品項 BOM 用量加總，達到門檻即對該原料成本套用折扣百分比。</div>
+      <div class="toolbar">
+        <select id="disc-material-filter" onchange="filterDiscMaterial()">
+          <option value="">全部原料</option>
+          <option>鋁合金門框 A型</option>
+          <option>防火膨脹條 3mm</option>
+          <option>鉸鏈組 標準型</option>
+          <option>防火板材 A級</option>
+        </select>
+        <button class="btn btn-primary" onclick="showModal('新增折扣階梯')">＋ 新增折扣</button>
+      </div>
+      <div class="card">
+        <div class="card-header"><h3>原料折扣階梯（material_discount_tiers）</h3></div>
+        <div class="card-body">
+          <table>
+            <thead><tr><th>原料名稱</th><th>累積用量門檻</th><th>折扣百分比</th><th>折後係數</th><th>說明</th><th>操作</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>鋁合金門框 A型</td>
+                <td>≥ 20 支</td>
+                <td><span class="badge badge-green">3%</span></td>
+                <td>× 0.97</td>
+                <td>20 支以上享 3% 原料折扣</td>
+                <td><button class="btn btn-outline btn-sm">編輯</button> <button class="btn btn-danger btn-sm">刪除</button></td>
+              </tr>
+              <tr>
+                <td>鋁合金門框 A型</td>
+                <td>≥ 50 支</td>
+                <td><span class="badge badge-green">7%</span></td>
+                <td>× 0.93</td>
+                <td>50 支以上享 7% 原料折扣</td>
+                <td><button class="btn btn-outline btn-sm">編輯</button> <button class="btn btn-danger btn-sm">刪除</button></td>
+              </tr>
+              <tr>
+                <td>防火膨脹條 3mm</td>
+                <td>≥ 10 捲</td>
+                <td><span class="badge badge-green">5%</span></td>
+                <td>× 0.95</td>
+                <td>10 捲以上享 5% 原料折扣</td>
+                <td><button class="btn btn-outline btn-sm">編輯</button> <button class="btn btn-danger btn-sm">刪除</button></td>
+              </tr>
+              <tr>
+                <td>防火板材 A級</td>
+                <td>≥ 100 片</td>
+                <td><span class="badge badge-green">4%</span></td>
+                <td>× 0.96</td>
+                <td>100 片以上享 4% 原料折扣</td>
+                <td><button class="btn btn-outline btn-sm">編輯</button> <button class="btn btn-danger btn-sm">刪除</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="alert alert-warn" style="margin-top:16px">⚠ 同一原料若有多個門檻，系統取符合條件中 <strong>min_qty 最大</strong> 的那筆折扣套用（最優惠階梯）。</div>
     </div>
 
     <!-- ─────────────── 報價單管理 -->
@@ -556,7 +729,8 @@
 
 <script>
 const titles = {
-  dashboard:'儀表板', quotations:'報價單管理', sales:'銷售訂單',
+  dashboard:'儀表板', products:'產品管理', discounts:'折扣設定',
+  quotations:'報價單管理', sales:'銷售訂單',
   production:'製令管理', inventory:'庫存管理', purchase:'採購單',
   finance:'收款與關帳', partners:'客戶 / 廠商', knowledge:'AI 知識庫'
 };
@@ -621,6 +795,57 @@ function submitDirectSO(){
   const rep = document.getElementById('so-rep').value;
   if(!customer||!rep){ alert('請選擇客戶與負責業務'); return; }
   alert('✅ 銷售訂單建立成功\n實際開發時呼叫 n8n Webhook 06\nPOST ' + (window.__env||'') + '/webhook/direct-so\n\n系統將自動預留庫存並發送 Discord 通知');
+}
+
+const PRICING_DATA = {
+  'FD-A-STD': [
+    {name:'鋁合金門框', cat:'門框', qty:2},
+    {name:'防火膨脹條', cat:'密封條', qty:1},
+    {name:'鉸鏈組',     cat:'五金',  qty:3},
+    {name:'門鎖組',     cat:'五金',  qty:1},
+    {name:'岩棉隔熱板', cat:'填充材',qty:1}
+  ],
+  'FD-B-STD': [
+    {name:'鋁合金門框', cat:'門框', qty:2},
+    {name:'防火膨脹條', cat:'密封條', qty:1},
+    {name:'鉸鏈組',     cat:'五金',  qty:2},
+    {name:'門鎖組',     cat:'五金',  qty:1},
+    {name:'岩棉隔熱板', cat:'填充材',qty:1}
+  ]
+};
+
+function selectProduct(name, code){
+  // 切換到定價配方 tab
+  const screen = document.getElementById('screen-products');
+  screen.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  screen.querySelectorAll('.tab')[1].classList.add('active');
+  ['list','pricing','bom'].forEach(v=>{
+    const d = document.getElementById('products-'+v);
+    if(d) d.style.display = 'none';
+  });
+  document.getElementById('products-pricing').style.display = 'block';
+  document.getElementById('pricing-banner').style.display = 'none';
+  document.getElementById('pricing-content').style.display = 'block';
+  document.getElementById('pricing-product-name').textContent = name + '（' + code + '）';
+  document.getElementById('bom-product-name').textContent = name + '（' + code + '）';
+  document.getElementById('bom-banner').style.display = 'none';
+  document.getElementById('bom-content').style.display = 'block';
+  // 填充定價配方表
+  const tbody = document.querySelector('#pricing-table tbody');
+  tbody.innerHTML = '';
+  const data = PRICING_DATA[code] || [];
+  data.forEach(row=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${row.name}</td><td><span class="badge badge-gray">${row.cat}</span></td><td>${row.qty}</td><td><span class="badge badge-blue">有階梯設定</span></td><td><button class="btn btn-outline btn-sm" onclick="showModal('編輯零件')">編輯</button></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function filterDiscMaterial(){
+  const val = document.getElementById('disc-material-filter').value;
+  document.querySelectorAll('#screen-discounts table tbody tr').forEach(tr=>{
+    tr.style.display = (!val || tr.cells[0].textContent.includes(val)) ? '' : 'none';
+  });
 }
 
 function showModal(id){ alert('【' + id + '】\n實際開發時此處開啟 Budibase Form Modal'); }
